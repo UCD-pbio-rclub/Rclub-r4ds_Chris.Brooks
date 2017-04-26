@@ -50,7 +50,7 @@ ggplot(data = mpg) +
 # question 5
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = class, y = drv))
-# this is not useful because 
+# this is not useful because there are only one to three points for each, both are categorical variables, and plotting them does not give any useful information.
 
 ```
 

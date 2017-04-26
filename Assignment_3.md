@@ -92,7 +92,7 @@ ggplot(data = mpg) +
 ![](Assignment_3_files/figure-html/unnamed-chunk-3-3.png)<!-- -->
 
 ```r
-# this is not useful because 
+# this is not useful because there are only one to three points for each, both are categorical variables, and plotting them does not give any useful information.
 ```
 
 ### Excercise 3.3.1
