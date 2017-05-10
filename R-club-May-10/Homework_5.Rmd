@@ -1,0 +1,247 @@
+---
+title: "R Notebook"
+output:
+  html_document: 
+    keep_md: yes
+  html_notebook: default
+---
+
+
+### Homework 5
+
+```{r}
+library(nycflights13)
+library(tidyverse)
+library(ggplot2)
+```
+
+
+```{r}
+flights
+```
+
+
+
+```{r}
+filter(flights, month == 1, day == 1)
+
+```
+
+
+
+```{r}
+jan1 <- filter(flights, month == 1, day == 1)
+
+(dec25 <- filter(flights, month == 12, day == 25))
+```
+
+
+
+```{r}
+df <- tibble(x = c(1, NA, 3))
+filter(df, x > 1)
+filter(df, is.na(x) | x > 1)
+```
+
+
+#### Exercise 5.2.4
+
+##### question 1 
+```{r}
+#arrival delay 2 or more hours
+filter(flights, arr_delay >= 120)
+
+#flew to Houston (IAH or HOU)
+filter(flights, dest == "IAH" | dest == "HOU")
+
+#Were operated by United, American, or Delta
+filter(flights, carrier == "UA" | carrier == "AA" | carrier == "DL")
+
+#Departed in summer (July, August, and September)
+filter(flights, month == 7 | month == 8 | month == 9)
+
+#Arrived more than two hours late, but didn’t leave late
+filter(flights, arr_delay > 120 & dep_delay == 0)
+
+#Were delayed by at least an hour, but made up over 30 minutes in flight
+filter(flights, dep_delay >= 60 & arr_delay <= 30) 
+
+#Departed between midnight and 6am (inclusive)
+filter(flights, dep_time >= 0 & dep_time <= 600)
+```
+
+
+##### question 2
+
+```{r}
+?between()
+
+filter(flights, between(flights$dep_time, 0, 600))
+```
+
+Between takes values inclusive of two boundary values. ie x >= left & x <= right, yes you can use it to simplify part 7 of question 1.
+
+
+##### question 3
+
+
+```{r}
+filter(flights, is.na(dep_time))
+```
+
+8,255 flights have NA dep_time.
+
+##### question 4
+
+NA....
+
+
+### Exercise 5.3.1
+
+##### question 2
+
+```{r}
+arrange(flights, desc(is.na(flights$dep_time)))
+```
+
+
+##### question 2
+
+```{r}
+# most delayed flights
+arrange(flights, desc(dep_delay))
+# ealiest leaving
+arrange(flights, dep_time)
+
+
+```
+
+
+##### question 3
+
+```{r}
+# fastest flights
+
+arrange(flights, air_time)
+```
+
+##### question 4
+
+```{r}
+# farthest distance
+arrange(flights, distance)
+
+#shortest
+arrange(flights, desc(distance))
+
+```
+
+
+### Exercise 5.4.1
+
+
+##### question 1
+
+```{r}
+# how many ways to select columns dep_time, dep_delay, arr_time, arr_delay
+
+select(flights, dep_time, dep_delay, arr_time, arr_delay)
+
+select(flights, dep_time:arr_delay )
+
+# select(flights, -everything not those)
+
+select(flights, contains("arr"), contains("dep"))
+```
+
+
+##### questions 2
+
+```{r}
+select(flights, arr_delay, arr_delay)
+```
+
+only comes up once!
+
+
+##### question 3
+
+```{r}
+# what does one_of do
+
+?one_of
+
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+select(flights, one_of(vars) )
+```
+
+
+Allows you to find variables that are contained in a character vector and apply it to select
+
+
+##### question 4
+
+```{r}
+select(flights, contains("TIME"))
+
+?select
+
+#select(flights, ignore.case = FALSE, contains("TIME"))
+```
+
+
+does not worry about case, but this can be changes by, ignore.case = FALSE
+
+
+
+
+
+### Exercise 5.5.2
+
+##### question 1
+
+```{r}
+# new rows with dep_time, sched_dep_time are more convient, minutes past midnight
+
+mutate(flights, departure = dep_time)
+```
+
+
+##### question 2
+
+```{r}
+#Compare air_time with arr_time - dep_time. What do you expect to see? What do you see? What do you need to do to fix it?
+
+transmute(flights, in_air = arr_time - dep_time, air_time = air_time)
+```
+
+
+In air is much larger than the actual air time, this might be because dep time and arr time are not in units of minutes, but air_time is. You would have to change the units of the arr time and dep time to minutes
+
+
+##### question 3
+
+```{r}
+# Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?
+
+transmute(flights, dep_time = dep_time, sched_dep_time = sched_dep_time, dep_delay = dep_delay)
+```
+
+The dep delay should equal the difference of dep time and scheduled dep time.
+
+
+##### question 4
+
+```{r}
+
+#Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().
+
+?min_rank()
+?ties.method
+
+mutate(flights, most_delayed = desc(min_rank(dep_delay)))
+```
+
+
+Puts every tie to the lowest rank
+
