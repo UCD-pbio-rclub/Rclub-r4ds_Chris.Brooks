@@ -1,7 +1,8 @@
 ---
 title: "R Notebook"
 output:
-  html_document: default
+  html_document: 
+    keep_md: yes
   html_notebook: default
 ---
 
@@ -119,6 +120,16 @@ vars <- "mpg"
 mtcars$mpg
 
 mtcars %>% as_tibble() %>% .[[vars]]
+
+mtcars %>% as_tibble() %>% .[vars]
+
+# Julins ways
+
+# get(var,mpg)
+# select(mpg, matches(var))
+# subset(mpg, select=var)
+
+
 ```
 
 ##### Question 4
